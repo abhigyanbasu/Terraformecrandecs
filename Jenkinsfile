@@ -21,7 +21,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 // Check out the code from the repository
-                git branch: 'main', url: 'https://github.com/abhigyanbasu/Terraformecrandecs.git'
+                git branch: 'master', url: 'https://github.com/abhigyanbasu/Terraformecrandecs.git'
             }
         }
 
