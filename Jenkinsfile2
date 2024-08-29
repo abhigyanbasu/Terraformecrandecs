@@ -26,7 +26,6 @@ pipeline {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials ('AWS_SECRET_ACCESS_KEY')
     }
-
     stages {
         stage('Validate Parameters') {
             steps {
@@ -43,45 +42,54 @@ pipeline {
                 }
             }
         }
-
+    
+    
         stage('Checkout Code') {
             steps {
+                // Check out the code from the repository
                 git branch: 'master', url: 'https://github.com/abhigyanbasu/Terraformecrandecs.git'
             }
         }
 
         stage('Terraform Init for ECR') {
             when {
-                expression { return params.RESOURCE_TYPE == 'ECR' || params.RESOURCE_TYPE == 'Both' }
+                expression { return params.RESOURCES == 'ECR' || params.RESOURCES == 'Both' }
             }
             steps {
-                dir('terraform/ecr') {
-                    sh 'terraform init'
+                dir('terraform/ecr') {  // Directory containing the Terraform configuration for the first resource
+                    script {
+                        // Initialize Terraform for the first resource
+                        sh 'terraform init'
+                    }
                 }
             }
         }
 
         stage('Terraform Plan for ECR') {
             when {
-                expression { return params.RESOURCE_TYPE == 'ECR' || params.RESOURCE_TYPE == 'Both' }
+                expression { return params.RESOURCES == 'ECR' || params.RESOURCES == 'Both' }
             }
             steps {
                 dir('terraform/ecr') {
-                    sh 'terraform plan -var="ecr_repo_name=$ECR_REPO_NAME" -out=tfplan-ecr'
+                    script {
+                        // Plan Terraform changes for the first resource
+                        //def REPO_NAME = "${params.REPO_NAME}"
+                        sh 'terraform plan -var="ecr_repo_name=$ECR_REPO_NAME" -out=tfplan'
+                    }
                 }
             }
         }
 
         stage('Terraform Apply for ECR') {
             when {
-                expression { return params.RESOURCE_TYPE == 'ECR' || params.RESOURCE_TYPE == 'Both' }
+                expression { return params.RESOURCES == 'ECR' || params.RESOURCES == 'Both' }
             }
             steps {
                 dir('terraform/ecr') {
-                   script {
+                    script {
                         // Apply the Terraform plan for the first resource
                         input message: 'Approve Terraform Apply?'
-                        sh 'terraform apply tfplan-ecr'
+                        sh 'terraform apply tfplan'
                     }
                 }
             }
@@ -89,36 +97,43 @@ pipeline {
 
         stage('Terraform Init for ECS') {
             when {
-                expression { return params.RESOURCE_TYPE == 'ECS' || params.RESOURCE_TYPE == 'Both' }
+                expression { return params.RESOURCES == 'ECS' || params.RESOURCES == 'Both' }
             }
             steps {
-                dir('terraform/ecs') {
-                    sh 'terraform init'
+                dir('terraform/ecs') {  // Directory containing the Terraform configuration for the second resource
+                    script {
+                        // Initialize Terraform for the second resource
+                        sh 'terraform init'
+                    }
                 }
             }
         }
 
         stage('Terraform Plan for ECS') {
             when {
-                expression { return params.RESOURCE_TYPE == 'ECS' || params.RESOURCE_TYPE == 'Both' }
-            }
-            steps {
-                dir('terraform/ecs') {
-                    sh "terraform plan -var 'ecs_cluster_name=${params.ECS_CLUSTER_NAME}' -out=tfplan-ecs"
-                }
-            }
-        }
-
-        stage('Terraform Apply for ECS') {
-            when {
-                expression { return params.RESOURCE_TYPE == 'ECS' || params.RESOURCE_TYPE == 'Both' }
+                expression { return params.RESOURCES == 'ECS' || params.RESOURCES == 'Both' }
             }
             steps {
                 dir('terraform/ecs') {
                     script {
+                        // Plan Terraform changes for the second resource
+                        def CLUSTER_NAME = "${params.CLUSTER_NAME}"
+                        sh 'terraform plan -var="ecs_cluster_name=$CLUSTER_NAME" -out=tfplan2'
+                    }
+                }
+            }
+        }
+
+        stage('Terraform Apply for Resource 2') {
+            when {
+                expression { return params.RESOURCES == 'Resource2' || params.RESOURCES == 'Both' }
+            }
+            steps {
+                dir('terraform/resource2') {
+                    script {
                         // Apply the Terraform plan for the second resource
                         input message: 'Approve Terraform Apply?'
-                        sh 'terraform apply -auto-approve tfplan-ecs'
+                        sh 'terraform apply -auto-approve tfplan2'
                     }
                 }
             }
@@ -135,7 +150,7 @@ pipeline {
         }
 
         success {
-            echo 'Selected resources were created successfully!'
+            echo 'Selected resources created successfully!'
         }
     }
-}
+ }
