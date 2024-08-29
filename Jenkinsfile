@@ -42,8 +42,8 @@ pipeline {
                 }
             }
         }
-    }
-    stages {
+    
+    
         stage('Checkout Code') {
             steps {
                 // Check out the code from the repository
