@@ -3,9 +3,19 @@ pipeline {
 
     parameters {
         choice(
-            name: 'RESOURCES',
+            name: 'RESOURCE_TYPE',
             choices: ['ECR', 'ECS', 'Both'],
-            description: 'Select the resource(s) to deploy (ECR, ECS, or Both).'
+            description: 'Select the type of resource to deploy (ECR, ECS, or Both)'
+        )
+        string(
+            name: 'ECR_REPO_NAME',
+            defaultValue: '',
+            description: 'Enter the name of the ECR repository (required if ECR is selected)'
+        )
+        string(
+            name: 'ECS_CLUSTER_NAME',
+            defaultValue: '',
+            description: 'Enter the name of the ECS cluster (required if ECS is selected)'
         )
     }
 
@@ -16,7 +26,23 @@ pipeline {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials ('AWS_SECRET_ACCESS_KEY')
     }
-
+    stages {
+        stage('Validate Parameters') {
+            steps {
+                script {
+                    if (params.RESOURCE_TYPE == 'ECR' && params.ECR_REPO_NAME == '') {
+                        error('You selected ECR but did not provide an ECR repository name.')
+                    }
+                    if (params.RESOURCE_TYPE == 'ECS' && params.ECS_CLUSTER_NAME == '') {
+                        error('You selected ECS but did not provide an ECS cluster name.')
+                    }
+                    if (params.RESOURCE_TYPE == 'Both' && (params.ECR_REPO_NAME == '' || params.ECS_CLUSTER_NAME == '')) {
+                        error('You selected Both but did not provide both ECR repository and ECS cluster names.')
+                    }
+                }
+            }
+        }
+    }
     stages {
         stage('Checkout Code') {
             steps {
