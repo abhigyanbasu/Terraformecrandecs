@@ -54,9 +54,13 @@ pipeline {
             when {
                 expression { return params.RESOURCE_TYPE == 'ECR' || params.RESOURCE_TYPE == 'Both' }
             }
+            
             steps {
+                
+                def workspace = "ws-$ECR_REPO_NAME"    
                 dir('terraform/ecr') {
                     sh 'terraform init'
+                    sh 'terraform workspace new ${workspace} || terraform workspace select ${workspace}'
                 }
             }
         }
