@@ -128,6 +128,7 @@ pipeline {
     post {
         always {
             echo 'Pipeline execution completed.'
+            cleanWs()
         }
 
         failure {
