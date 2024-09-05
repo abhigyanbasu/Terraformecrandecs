@@ -7,7 +7,7 @@ terraform {
   # Adding Backend as S3 for Remote State Storage
   backend "s3" {
     bucket = "abhigyan-terraform-backend"
-    key    = "ecr/terraform.tfstate"
+    key    = "ecr-${var.ecr_repo_name}/terraform.tfstate"
     region = "ap-south-1" 
 
      
@@ -24,7 +24,7 @@ variable "ecr_repo_name" {
 }
 
 # Create the ECR repository using the variable
-resource "aws_ecr_repository" "$ECR_REPO_NAME" {
+resource "aws_ecr_repository" "this" {
   name                 = var.ecr_repo_name
   image_tag_mutability = "MUTABLE"  # Options: MUTABLE, IMMUTABLE
 }
