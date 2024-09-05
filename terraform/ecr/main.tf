@@ -24,7 +24,7 @@ variable "ecr_repo_name" {
 }
 
 # Create the ECR repository using the variable
-resource "aws_ecr_repository" "${var.ecr_repo_name}" {
+resource "aws_ecr_repository" "repo_${var.ecr_repo_name}" {
   name                 = var.ecr_repo_name
   image_tag_mutability = "MUTABLE"  # Options: MUTABLE, IMMUTABLE
 }
