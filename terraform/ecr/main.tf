@@ -23,11 +23,7 @@ variable "ecr_repo_name" {
   default     = "my-default-ecr-repo"  # Provide a default value if desired
 }
 
-variable "workspace_name" {
-  description = "The name of the workspace"
-  type        = string
- // default     = "my-default-ecr-repo"  # Provide a default value if desired
-}
+
 # Create the ECR repository using the variable
 resource "aws_ecr_repository" "this" {
   name                 = var.ecr_repo_name
