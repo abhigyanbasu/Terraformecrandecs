@@ -22,7 +22,7 @@ pipeline {
     environment {
         // Terraform workspace, if applicable
         TF_VERSION = "1.5.7"  // Replace with your desired Terraform version
-        TF_WORKSPACE = "$ECR_REPO_NAME"
+        //TF_WORKSPACE = "$ECR_REPO_NAME"
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials ('AWS_SECRET_ACCESS_KEY')
     }
@@ -59,21 +59,21 @@ pipeline {
                script{ 
                   
                 dir('terraform/ecr') {
-                    sh 'terraform init'
+                    sh "terraform init -backend-config='key=ecr/$ECR_REPO_NAME/terraform.tfstate"
                     
                 }
             }
         }
         }
 
-        /*stage('switch workspace') {
+        stage('switch workspace') {
             when {
                 expression { return params.RESOURCE_TYPE == 'ECR' || params.RESOURCE_TYPE == 'Both' }
             }
             
             steps {
                script{ 
-                //def workspace = params.ECR_REPO_NAME
+                def workspace = params.ECR_REPO_NAME
                     sh 'unset TF_WORKSPACE'
                     sh 'terraform workspace new $ECR_REPO_NAME'
                     
