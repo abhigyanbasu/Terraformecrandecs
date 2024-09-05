@@ -59,7 +59,7 @@ pipeline {
                script{ 
                   
                 dir('terraform/ecr') {
-                    sh "terraform init -backend-config='key=ecr/$ECR_REPO_NAME/terraform.tfstate"
+                    sh "terraform init -backend-config='key=ecr/$ECR_REPO_NAME/terraform.tfstate'"
                     
                 }
             }
