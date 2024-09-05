@@ -74,6 +74,7 @@ pipeline {
             steps {
                script{ 
                 //def workspace = params.ECR_REPO_NAME
+                    sh 'unset TF_WORKSPACE'
                     sh 'terraform workspace new $ECR_REPO_NAME'
                     
                 }
