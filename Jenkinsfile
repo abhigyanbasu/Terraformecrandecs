@@ -73,8 +73,8 @@ pipeline {
             
             steps {
                script{ 
-                def workspace = params.ECR_REPO_NAME
-                    sh 'terraform workspace new ${workspace}'
+                //def workspace = params.ECR_REPO_NAME
+                    sh 'terraform workspace new $ECR_REPO_NAME'
                     
                 }
             }
