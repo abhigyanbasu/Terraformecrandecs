@@ -7,12 +7,12 @@ terraform {
   # Adding Backend as S3 for Remote State Storage
   backend "s3" {
     bucket = "abhigyan-terraform-backend"
-    key    = "ecr/terraform.tfstate"
+    key    = "ecr/${TF_WORKSPACE}/terraform.tfstate"
     region = "ap-south-1" 
 
      
     # For State Locking
-    dynamodb_table = "terraform-state-table"    
+   // dynamodb_table = "terraform-state-table"    
   
   }
 }
@@ -23,6 +23,11 @@ variable "ecr_repo_name" {
   default     = "my-default-ecr-repo"  # Provide a default value if desired
 }
 
+variable "workspace_name" {
+  description = "The name of the workspace"
+  type        = string
+ // default     = "my-default-ecr-repo"  # Provide a default value if desired
+}
 # Create the ECR repository using the variable
 resource "aws_ecr_repository" "this" {
   name                 = var.ecr_repo_name

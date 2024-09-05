@@ -22,7 +22,7 @@ pipeline {
     environment {
         // Terraform workspace, if applicable
         TF_VERSION = "1.5.7"  // Replace with your desired Terraform version
-        //TF_WORKSPACE = "$ECR_REPO_NAME"
+        TF_WORKSPACE = "$ECR_REPO_NAME"
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials ('AWS_SECRET_ACCESS_KEY')
     }
@@ -66,7 +66,7 @@ pipeline {
         }
         }
 
-        stage('switch workspace') {
+        /*stage('switch workspace') {
             when {
                 expression { return params.RESOURCE_TYPE == 'ECR' || params.RESOURCE_TYPE == 'Both' }
             }
@@ -79,7 +79,7 @@ pipeline {
                     
                 }
             }
-        }
+        }*/
         
 
         stage('Terraform Plan for ECR') {
