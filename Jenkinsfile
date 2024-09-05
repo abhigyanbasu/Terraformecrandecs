@@ -79,7 +79,7 @@ pipeline {
                     
                 }
             }
-        }*/
+        }
         
 
         stage('Terraform Plan for ECR') {
