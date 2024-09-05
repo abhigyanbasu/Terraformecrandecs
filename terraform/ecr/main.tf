@@ -7,7 +7,7 @@ terraform {
   # Adding Backend as S3 for Remote State Storage
   backend "s3" {
     bucket = "abhigyan-terraform-backend"
-    key    = "ecr/${TF_WORKSPACE}/terraform.tfstate"
+    //key    = "ecr/${TF_WORKSPACE}/terraform.tfstate"
     region = "ap-south-1" 
 
      
