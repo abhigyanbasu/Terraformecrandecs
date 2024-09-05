@@ -3,6 +3,19 @@ provider "aws" {
   region = "ap-south-1"  # Specify your desired AWS region
 }
 
+terraform {
+  # Adding Backend as S3 for Remote State Storage
+  backend "s3" {
+    bucket = "abhigyan-terraform-backend"
+    key    = "ecr/terraform.tfstate"
+    region = "ap-south-1" 
+
+     
+    # For State Locking
+    dynamodb_table = "terraform-state-table"    
+  
+  }
+}
 # Declare a variable for the repository name
 variable "ecr_repo_name" {
   description = "The name of the ECR repository"
