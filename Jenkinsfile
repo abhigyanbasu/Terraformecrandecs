@@ -60,7 +60,7 @@ pipeline {
                 def workspace = "ws-$ECR_REPO_NAME"    
                 dir('terraform/ecr') {
                     sh 'terraform init'
-                    sh 'terraform workspace new ${workspace} || terraform workspace select ${workspace}'
+                    sh 'terraform workspace new ${workspace} '
                 }
             }
         }
