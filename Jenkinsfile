@@ -56,13 +56,14 @@ pipeline {
             }
             
             steps {
-                
+               script{ 
                 def workspace = "ws-$ECR_REPO_NAME"    
                 dir('terraform/ecr') {
                     sh 'terraform init'
                     sh 'terraform workspace new ${workspace} || terraform workspace select ${workspace}'
                 }
             }
+        }
         }
 
         stage('Terraform Plan for ECR') {
