@@ -57,10 +57,25 @@ pipeline {
             
             steps {
                script{ 
-                def workspace = "ws-$ECR_REPO_NAME"    
+                  
                 dir('terraform/ecr') {
                     sh 'terraform init'
-                    sh 'terraform workspace new ${workspace} '
+                    
+                }
+            }
+        }
+        }
+
+        stage('switch workspace') {
+            when {
+                expression { return params.RESOURCE_TYPE == 'ECR' || params.RESOURCE_TYPE == 'Both' }
+            }
+            
+            steps {
+               script{ 
+                def workspace = params.ECR_REPO_NAME
+                    sh 'terraform workspace new ${workspace}'
+                    
                 }
             }
         }
