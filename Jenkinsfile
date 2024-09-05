@@ -22,7 +22,7 @@ pipeline {
     environment {
         // Terraform workspace, if applicable
         TF_VERSION = "1.5.7"  // Replace with your desired Terraform version
-        TF_WORKSPACE = "default"
+        //TF_WORKSPACE = "$ECR_REPO_NAME"
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials ('AWS_SECRET_ACCESS_KEY')
     }
